@@ -1,0 +1,13 @@
+# 密钥 —— 绝不提交
+.env
+
+# 记忆库（含个人真实信息 + 向量二进制）—— 绝不提交
+*.db
+*.db.bak
+*.sqlite
+*.sqlite3
+
+# Python 缓存
+__pycache__/
+*.pyc
+.idea/
