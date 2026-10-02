@@ -14,3 +14,6 @@ style_samples.py
 __pycache__/
 *.pyc
 .idea/
+
+# 清理时移出的临时/残留文件
+_trash/
