@@ -52,6 +52,21 @@ class Mirror:
         if prefs:
             prof_block = "【这个人目前的画像】" + "；".join(prefs[:10]) + "\n"
 
+        # 语气样本：few-shot 原话示例。学说话，给样例比给规则强得多。
+        style_block = ""
+        try:
+            from style_samples import STYLE_SAMPLES
+            if STYLE_SAMPLES:
+                style_block = (
+                    "【他真实说话的样例】（原样保留，包括错别字。"
+                    "模仿这种说话方式：短句、口语、tm/牛魔的等口头禅、夸张吐槽）\n"
+                    + "\n".join("· " + s for s in STYLE_SAMPLES) + "\n"
+                    + "注意：样例只示范【说话方式】，不代表他懂这些领域——\n"
+                    "遇到具体知识（技术/作品/事件）没聊过就是没聊过，照样按规矩承认。\n"
+                )
+        except ImportError:
+            pass
+
         system = (
             "你是 %s 的数字分身，正在和\"你自己\"（本尊）聊天——对面那个人就是你本人。\n"
             "记住你的边界：\n"
@@ -70,7 +85,7 @@ class Mirror:
             "     换个热乎点的接法，而不是继续顶嘴。\n"
             "   - 不要\"首先/其次/总结一下\"，不要主动帮忙，不要比本人更懂。\n" % (config.MIRROR_OF, config.MIRROR_OF)
         )
-        return system + "\n" + mem_block + prof_block
+        return system + "\n" + mem_block + prof_block + style_block
 
     # ------------------------------------------------------------
     # 问一个问题，拿一个回答（同时完成"边聊边记"）
