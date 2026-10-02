@@ -52,20 +52,32 @@ class Mirror:
         if prefs:
             prof_block = "【这个人目前的画像】" + "；".join(prefs[:10]) + "\n"
 
-        # 语气样本：few-shot 原话示例。学说话，给样例比给规则强得多。
+        # 语气：优先从【记忆库】里读已抽到的 style 条目（边聊边更新、随人变），
+        # 库里还没有时用 style_samples.py 的 few-shot 原话兜底（冷启动）。
         style_block = ""
-        try:
-            from style_samples import STYLE_SAMPLES
-            if STYLE_SAMPLES:
-                style_block = (
-                    "【他真实说话的样例】（原样保留，包括错别字。"
-                    "模仿这种说话方式：短句、口语、tm/牛魔的等口头禅、夸张吐槽）\n"
-                    + "\n".join("· " + s for s in STYLE_SAMPLES) + "\n"
-                    + "注意：样例只示范【说话方式】，不代表他懂这些领域——\n"
-                    "遇到具体知识（技术/作品/事件）没聊过就是没聊过，照样按规矩承认。\n"
-                )
-        except ImportError:
-            pass
+        style_mems = [m["content"] for m in self.hub.list_memories(
+            subject=self.subject, limit=100) if m.get("kind") == "style"]
+        if style_mems:
+            style_block = (
+                "【他最近的说话方式】（从聊天里自动记下的，会随他变化。"
+                "模仿这种语气：短句、口语、口头禅、夸张吐槽）\n"
+                + "\n".join("- " + s for s in style_mems[:8]) + "\n"
+                + "注意：这只是【说话方式】，不代表他懂这些领域——\n"
+                "遇到具体知识（技术/作品/事件）没聊过就是没聊过，照样按规矩承认。\n"
+            )
+        else:
+            try:
+                from style_samples import STYLE_SAMPLES
+                if STYLE_SAMPLES:
+                    style_block = (
+                        "【他真实说话的样例】（原样保留，包括错别字。"
+                        "模仿这种说话方式：短句、口语、tm/牛魔的等口头禅、夸张吐槽）\n"
+                        + "\n".join("· " + s for s in STYLE_SAMPLES) + "\n"
+                        + "注意：样例只示范【说话方式】，不代表他懂这些领域——\n"
+                        "遇到具体知识（技术/作品/事件）没聊过就是没聊过，照样按规矩承认。\n"
+                    )
+            except ImportError:
+                pass
 
         system = (
             "你是 %s 的数字分身，正在和\"你自己\"（本尊）聊天——对面那个人就是你本人。\n"

@@ -23,7 +23,7 @@ from contextlib import contextmanager
 from .dbutil import LOCK, now, retry_db
 from . import deps, schema
 
-KINDS = ("preference", "fact", "decision", "person", "project", "procedure")
+KINDS = ("preference", "fact", "decision", "person", "project", "procedure", "style")
 
 # procedure 记忆挂文件引用（MemFS-lite）：内容存 memory_files 表（文本、sha 去重）
 MAX_FILE_BYTES = 64 * 1024
