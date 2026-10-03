@@ -103,6 +103,17 @@
 
 聊天中：`/记忆` 看它记住了什么，`/画像` 看它眼中的你，`q` 退出。
 
+## 关于复用的 memory-hub
+
+记忆引擎不是我从零写的，是复用开源组件 [**memory-hub**](https://github.com/redmaplewww/memory-hub)（作者 redmaplewww），并在其基础上二次开发。
+
+- **复用了什么**：三层记忆（画像 / 条目 / 会话摘要）+ 冲突消解 + 三路 RRF 召回 + 事件审计这套内核
+- **我改了什么**：
+  - 接 DashScope `text-embedding-v3` 替换原 fastembed，修复「M1 召回不到」「M2 孤儿向量」两个缺陷
+  - 新增 `style` 记忆类别，让语气口头禅成为可生长、可消解冲突的记忆
+  - 松动了抽取器「宁可漏」的激进策略，补自我介绍漏存
+- **协议说明**：原仓库未附带 LICENSE 文件，我遵守「保留出处、如实声明改动」的原则，具体改动见 `memory_hub/README.md`
+
 ## 技术栈
 
 - 记忆引擎：memory-hub（复用，零第三方依赖，三层记忆 + 冲突消解 + 三路 RRF 召回）
@@ -118,7 +129,7 @@ config.py        参数集中（模型/召回数/短期记忆轮数/数据库路
 feed.py          批量喂料脚本（可选）
 evaluate.py      露馅测试（它会不会编造）
 blind_test.py    盲测（它像不像你）
-blind_questions.py  盲测题目 + 你的真身答案
+blind_questions.py  盲测题目 + 真身答案（含个人真实信息，仅本地保留，不入库）
 memory_hub/      复用的记忆引擎（17 文件）
 DESIGN-MIRROR.md 工程设计与踩坑记录（M1-M10）
 ```
